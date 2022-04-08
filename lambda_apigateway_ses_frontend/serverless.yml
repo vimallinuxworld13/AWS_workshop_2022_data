@@ -1,0 +1,24 @@
+service: final-aws-ses-email
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - "ses:*"
+          Resource:
+            - "*"
+
+functions:
+  create:
+    handler: handler.createContact
+    events:
+      - http:
+          path: /contact-us
+          method: post
+          cors: true
