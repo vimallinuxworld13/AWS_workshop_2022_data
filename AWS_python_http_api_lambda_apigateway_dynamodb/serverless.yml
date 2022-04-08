@@ -1,0 +1,84 @@
+service: aws-python-http-api-project
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: us-east-1
+  profile: default
+  stage: "dev"
+  timeout: 10
+  memorySize: 128
+  environment:
+    DYNAMODB_TABLE: ${self:custom.dynamotable}
+    REGION_NAME: ${self:provider.region}
+  iam:
+    role:
+      statements:
+       
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+functions:
+  create:
+    handler: handler.create
+    events:
+      - http:
+          path: posts/create
+          method: post
+  get:
+    handler: handler.get
+    events:
+      - http:
+          path: posts/get/{postId}
+          method: get
+  all:
+    handler: handler.all
+    events:
+      - http:
+          path: posts/all
+          method: get
+  update:
+    handler: handler.update
+    events:
+      - http:
+          path: posts/update/{postId}
+          method: put
+  delete:
+    handler: handler.delete
+    events:
+      - http:
+          path: posts/delete/{postId}
+          method: delete
+
+
+resources:
+ Resources:
+   postsTable:
+     Type: AWS::DynamoDB::Table
+     Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+
+plugins:
+  - serverless-python-requirements
+custom:
+  dynamotable: the-posts
+  pythonRequirements:
+    dockerizePip: non-linux
+ 
