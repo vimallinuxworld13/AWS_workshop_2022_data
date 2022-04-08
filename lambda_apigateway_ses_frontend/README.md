@@ -1,3 +1,14 @@
+
+$ install node
+
+https://nextjs.org/learn/basics/create-nextjs-app/setup
+
+for frontend : sending email
+
+$ npx create-next-app contact-us  --use-npm --example "https://github.com/vercel/next-learn/tree/master/basics/learn-starter"
+$ cd contact-us
+$ npm run dev
+
 <!--
 title: 'AWS NodeJS Example'
 description: 'This template demonstrates how to deploy a NodeJS function running on AWS Lambda using the traditional Serverless Framework.'
