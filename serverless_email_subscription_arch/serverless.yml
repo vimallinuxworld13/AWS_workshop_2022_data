@@ -1,0 +1,27 @@
+service: aws-node-project-final
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+  profile: default
+  stage: dev
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: "s3:*"
+          Resource: "*"
+
+functions:
+  quotes:
+    handler: handler/getQuotes.getQuotes
+    events:
+      - http:
+          path: quotes
+          method: get 
+          cors: true
+  hello:
+    handler: handler.hello
